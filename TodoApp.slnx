@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/Todo.Api.Tests/Todo.Api.Tests.csproj" />
+    <Project Path="backend/Todo.Api/Todo.Api.csproj" />
+  </Folder>
+</Solution>

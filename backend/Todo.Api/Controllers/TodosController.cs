@@ -9,12 +9,15 @@ namespace Todo.Api.Controllers;
 public sealed class TodosController(ITodoRepository todoRepository) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<IReadOnlyList<TodoItem>>(StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<TodoItem>> GetAll()
     {
         return Ok(todoRepository.GetAll());
     }
 
     [HttpPost]
+    [ProducesResponseType<TodoItem>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public ActionResult<TodoItem> Create(CreateTodoRequest request)
     {
         var item = todoRepository.Add(request.Title.Trim());
@@ -22,6 +25,8 @@ public sealed class TodosController(ITodoRepository todoRepository) : Controller
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
         var deleted = todoRepository.Delete(id);

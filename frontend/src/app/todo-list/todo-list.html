@@ -1,0 +1,38 @@
+<form class="add" (submit)="$event.preventDefault(); add(title)">
+  <label class="visually-hidden" for="new-todo">New todo</label>
+  <input
+    #title
+    id="new-todo"
+    type="text"
+    placeholder="What needs doing?"
+    [maxLength]="maxLength"
+    autocomplete="off"
+  />
+  <button type="submit">Add</button>
+</form>
+
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (loading()) {
+  <p class="status">Loading…</p>
+} @else if (todos().length === 0) {
+  <p class="status">Nothing to do. Add your first item above.</p>
+} @else {
+  <ul class="todos">
+    @for (todo of todos(); track todo.id) {
+      <li>
+        <span class="title">{{ todo.title }}</span>
+        <button
+          type="button"
+          class="delete"
+          (click)="remove(todo)"
+          [attr.aria-label]="'Delete ' + todo.title"
+        >
+          Delete
+        </button>
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.add {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.add input {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  border: 1px solid #c3c8d4;
+  border-radius: 6px;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  font: inherit;
+  color: #fff;
+  background: #3f51b5;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #32408f;
+}
+.delete {
+  padding: 0.35rem 0.7rem;
+  background: #c62828;
+}
+.delete:hover {
+  background: #9f1f1f;
+}
+
+.todos {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.todos li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.25rem;
+  border-bottom: 1px solid #e4e7ee;
+}
+.title {
+  overflow-wrap: anywhere;
+}
+.status {
+  color: #5b6372;
+}
+.error {
+  padding: 0.6rem 0.75rem;
+  color: #8a1c1c;
+  background: #fde8e8;
+  border-radius: 6px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

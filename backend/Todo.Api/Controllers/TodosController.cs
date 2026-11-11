@@ -6,7 +6,7 @@ namespace Todo.Api.Controllers;
 
 [ApiController]
 [Route("api/todos")]
-public sealed class TodoController(ITodoRepository todoRepository) : ControllerBase
+public sealed class TodosController(ITodoRepository todoRepository) : ControllerBase
 {
     [HttpGet]
     public ActionResult<IReadOnlyList<TodoItem>> GetAll()

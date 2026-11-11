@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using Todo.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ app.UseStatusCodePages();               // empty error responses (like a plain 4
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();

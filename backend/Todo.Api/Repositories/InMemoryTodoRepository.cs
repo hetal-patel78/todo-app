@@ -5,12 +5,13 @@ namespace Todo.Api.Repositories;
 public sealed class InMemoryTodoRepository : ITodoRepository
 {
 
+    private readonly Lock _gate = new();
     private readonly List<TodoItem> _items = [];
 
     public TodoItem Add(string title)
     {
         var item = new TodoItem(Guid.NewGuid(), title, DateTimeOffset.UtcNow);
-        lock (this)
+        lock (_gate)
         {
             _items.Add(item);
         }
@@ -19,7 +20,7 @@ public sealed class InMemoryTodoRepository : ITodoRepository
 
     public bool Delete(Guid id)
     {
-        lock (this)
+        lock (_gate)
         {
             var item = _items.FirstOrDefault(i => i.Id == id);
             if (item is null)
@@ -34,9 +35,7 @@ public sealed class InMemoryTodoRepository : ITodoRepository
     public IReadOnlyList<TodoItem> GetAll()
     {
 
-        lock (this)
-        {
-            return _items;
-        }
+        return _items;
+
     }
 }

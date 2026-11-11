@@ -86,4 +86,5 @@ public class InMemoryTodoRepositoryTests
         Assert.All(results, Assert.True);
         Assert.Empty(repo.GetAll());
     }
+
 }

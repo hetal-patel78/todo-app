@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{Todo.Api_HostAddress}}/weatherforecast/
+GET {{Todo.Api_HostAddress}}/api/todos
 Accept: application/json
 
 ###

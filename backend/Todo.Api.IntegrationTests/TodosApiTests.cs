@@ -7,7 +7,7 @@ using Todo.Api.Repositories;
 
 namespace Todo.Api.IntegrationTests;
 
-public class TodoApiTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class TodosApiTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
 {
     // Each test gets a fresh app, so the singleton in-memory store starts empty.
     private HttpClient NewClient() => factory.WithWebHostBuilder(_ => { }).CreateClient();

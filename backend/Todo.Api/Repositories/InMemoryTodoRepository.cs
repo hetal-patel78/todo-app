@@ -6,10 +6,14 @@ public sealed class InMemoryTodoRepository : ITodoRepository
 {
 
     private readonly List<TodoItem> _items = [];
+
     public TodoItem Add(string title)
     {
         var item = new TodoItem(Guid.NewGuid(), title, DateTimeOffset.UtcNow);
-        _items.Add(item);
+        lock (this)
+        {
+            _items.Add(item);
+        }
         return item;
     }
 
@@ -27,6 +31,9 @@ public sealed class InMemoryTodoRepository : ITodoRepository
     public IReadOnlyList<TodoItem> GetAll()
     {
 
-        return _items;
+        lock (this)
+        {
+            return _items;
+        }
     }
 }

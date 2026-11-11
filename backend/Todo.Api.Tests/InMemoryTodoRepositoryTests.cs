@@ -63,4 +63,14 @@ public class InMemoryTodoRepositoryTests
 
         Assert.False(deleted);
     }
+
+    [Fact]
+    public void Add_FromManyThreadsAtOnce_KeepsEveryItem()
+    {
+        var repo = new InMemoryTodoRepository();
+
+        Parallel.For(0, 10_000, i => repo.Add($"item {i}"));
+
+        Assert.Equal(10_000, repo.GetAll().Count);
+    }
 }

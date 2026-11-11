@@ -1,14 +1,16 @@
+using Microsoft.Extensions.Time.Testing;
 using Todo.Api.Repositories;
 
 namespace Todo.Api.Tests;
 
 public class InMemoryTodoRepositoryTests
 {
+    private static InMemoryTodoRepository Create() => new(TimeProvider.System);
     [Fact]
     public void GetAll_WhenEmpty_ReturnsEmptyList()
     {
         // Arrange
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
 
         // Act
         var result = repo.GetAll();
@@ -20,7 +22,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void Add_StoresItemAndAssignsIdAndTitle()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
 
         var item = repo.Add("Write tests");
 
@@ -32,7 +34,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void GetAll_ReturnsItemsInInsertionOrder()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
         repo.Add("first");
         repo.Add("second");
 
@@ -44,7 +46,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void Delete_ExistingItem_RemovesItAndReturnsTrue()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
         var keep = repo.Add("keep");
         var remove = repo.Add("remove");
 
@@ -57,7 +59,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void Delete_UnknownId_ReturnsFalse()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
 
         var deleted = repo.Delete(Guid.NewGuid());
 
@@ -67,7 +69,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void Add_FromManyThreadsAtOnce_KeepsEveryItem()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
 
         Parallel.For(0, 10_000, i => repo.Add($"item {i}"));
 
@@ -77,7 +79,7 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void Delete_FromManyThreadsAtOnce_RemovesEveryItem()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
         var ids = Enumerable.Range(0, 10_000).Select(i => repo.Add($"item {i}").Id).ToArray();
 
         var results = new bool[ids.Length];
@@ -90,11 +92,22 @@ public class InMemoryTodoRepositoryTests
     [Fact]
     public void GetAll_ReturnsSnapshot_NotAffectedByLaterAdds()
     {
-        var repo = new InMemoryTodoRepository();
+        var repo = Create();
         repo.Add("first");
 
         var snapshot = repo.GetAll();
         repo.Add("second");
         Assert.Single(snapshot);
+    }
+
+    [Fact]
+    public void Add_SetsCreatedAtFromTheClock()
+    {
+        var clock = new FakeTimeProvider(new DateTimeOffset(2026, 1, 1, 10, 0, 0, TimeSpan.Zero));
+        var repo = new InMemoryTodoRepository(clock);
+
+        var item = repo.Add("Milk");
+
+        Assert.Equal(clock.GetUtcNow(), item.CreatedAt);
     }
 }

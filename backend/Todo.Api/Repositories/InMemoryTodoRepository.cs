@@ -2,7 +2,7 @@ using Todo.Api.Models;
 
 namespace Todo.Api.Repositories;
 
-public sealed class InMemoryTodoRepository : ITodoRepository
+public sealed class InMemoryTodoRepository(TimeProvider clock) : ITodoRepository
 {
 
     private readonly Lock _gate = new();
@@ -10,7 +10,7 @@ public sealed class InMemoryTodoRepository : ITodoRepository
 
     public TodoItem Add(string title)
     {
-        var item = new TodoItem(Guid.NewGuid(), title, DateTimeOffset.UtcNow);
+        var item = new TodoItem(Guid.NewGuid(), title, clock.GetUtcNow());
         lock (_gate)
         {
             _items.Add(item);

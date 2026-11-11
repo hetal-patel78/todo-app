@@ -17,7 +17,7 @@ public sealed class TodosController(ITodoRepository todoRepository) : Controller
     [HttpPost]
     public ActionResult<TodoItem> Create(CreateTodoRequest request)
     {
-        var item = todoRepository.Add(request.Title);
+        var item = todoRepository.Add(request.Title.Trim());
         return Created($"/api/todos/{item.Id}", item);
     }
 
@@ -29,7 +29,7 @@ public sealed class TodosController(ITodoRepository todoRepository) : Controller
         {
             return NotFound();
         }
-        
+
         return NoContent();
     }
 }

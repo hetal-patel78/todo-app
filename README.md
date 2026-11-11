@@ -155,3 +155,8 @@ The API does not need to be running for any of the tests. The integration tests 
 - `App`: renders the page
 
 ---
+
+**Out of scope**
+- **No login (authentication).** Anyone who can reach the API can change the list.
+- With users, each person's todos would be stored separately, and the database would handle concurrent updates.
+- Editing a todo or marking it as done.

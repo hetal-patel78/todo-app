@@ -3,7 +3,7 @@ using Todo.Api.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ITodoRepository, InMemoryTodoRepository>();
@@ -11,7 +11,8 @@ builder.Services.AddSingleton<ITodoRepository, InMemoryTodoRepository>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
+app.UseExceptionHandler();              // unexpected exceptions become a 500 with a ProblemDetails body
+app.UseStatusCodePages();               // empty error responses (like a plain 404) get a ProblemDetails body too
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Todo.Api.Models;
+using Todo.Api.Repositories;
 
 namespace Todo.Api.IntegrationTests;
 
@@ -104,6 +106,26 @@ public class TodoApiTests(WebApplicationFactory<Program> factory) : IClassFixtur
         var response = await NewClient().DeleteAsync("/api/todos/abc");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UnexpectedError_Returns500WithProblemDetails()
+    {
+        var client = factory
+            .WithWebHostBuilder(b => b.ConfigureServices(s => s.AddSingleton<ITodoRepository, ThrowingRepository>()))
+            .CreateClient();
+
+        var response = await client.GetAsync("/api/todos");
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+    }
+
+    private sealed class ThrowingRepository : ITodoRepository
+    {
+        public IReadOnlyList<TodoItem> GetAll() => throw new InvalidOperationException("boom");
+        public TodoItem Add(string title) => throw new InvalidOperationException("boom");
+        public bool Delete(Guid id) => throw new InvalidOperationException("boom");
     }
 
 }

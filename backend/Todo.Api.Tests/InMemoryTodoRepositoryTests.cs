@@ -87,4 +87,14 @@ public class InMemoryTodoRepositoryTests
         Assert.Empty(repo.GetAll());
     }
 
+    [Fact]
+    public void GetAll_ReturnsSnapshot_NotAffectedByLaterAdds()
+    {
+        var repo = new InMemoryTodoRepository();
+        repo.Add("first");
+
+        var snapshot = repo.GetAll();
+        repo.Add("second");
+        Assert.Single(snapshot);
+    }
 }

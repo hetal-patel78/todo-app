@@ -34,8 +34,10 @@ public sealed class InMemoryTodoRepository : ITodoRepository
 
     public IReadOnlyList<TodoItem> GetAll()
     {
-
-        return _items;
+        lock (_gate)
+        {
+            return _items.ToArray();
+        }
 
     }
 }

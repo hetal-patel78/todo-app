@@ -11,7 +11,7 @@ public class TodoApiTests(WebApplicationFactory<Program> factory) : IClassFixtur
     private HttpClient NewClient() => factory.WithWebHostBuilder(_ => { }).CreateClient();
 
     [Fact]
-    public async Task Post_TitleWithSpaces_StoresTrimmedTitle() 
+    public async Task Post_TitleWithSpaces_StoresTrimmedTitle()
     {
         var client = factory.CreateClient();
 
@@ -48,7 +48,7 @@ public class TodoApiTests(WebApplicationFactory<Program> factory) : IClassFixtur
         var todos = await client.GetFromJsonAsync<List<TodoItem>>("/api/todos");
         Assert.Equal(created.Id, Assert.Single(todos!).Id);
     }
-   
+
     [Theory]
     [InlineData("")]
     [InlineData("   ")]

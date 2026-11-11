@@ -73,4 +73,17 @@ public class InMemoryTodoRepositoryTests
 
         Assert.Equal(10_000, repo.GetAll().Count);
     }
+
+    [Fact]
+    public void Delete_FromManyThreadsAtOnce_RemovesEveryItem()
+    {
+        var repo = new InMemoryTodoRepository();
+        var ids = Enumerable.Range(0, 10_000).Select(i => repo.Add($"item {i}").Id).ToArray();
+
+        var results = new bool[ids.Length];
+        Parallel.For(0, ids.Length, i => results[i] = repo.Delete(ids[i]));
+
+        Assert.All(results, Assert.True);
+        Assert.Empty(repo.GetAll());
+    }
 }

@@ -19,13 +19,16 @@ public sealed class InMemoryTodoRepository : ITodoRepository
 
     public bool Delete(Guid id)
     {
-        var item = _items.FirstOrDefault(i => i.Id == id);
-        if (item is null)
+        lock (this)
         {
-            return false;
-        }
+            var item = _items.FirstOrDefault(i => i.Id == id);
+            if (item is null)
+            {
+                return false;
+            }
 
-        return _items.Remove(item);
+            return _items.Remove(item);
+        }
     }
 
     public IReadOnlyList<TodoItem> GetAll()

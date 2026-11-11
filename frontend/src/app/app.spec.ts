@@ -1,23 +1,24 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 
 describe('App', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [App],
-    }).compileComponents();
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
   });
 
-  it('should create the app', () => {
+  it('renders the heading and the todo list', async () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    TestBed.inject(HttpTestingController).expectOne('/api/todos').flush([]);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Todo list');
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('h1')?.textContent).toContain('Todo list');
+    expect(el.querySelector('app-todo-list')).toBeTruthy();
   });
 });
